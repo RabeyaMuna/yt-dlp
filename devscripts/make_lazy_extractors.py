@@ -66,6 +66,11 @@ def get_all_ies():
         shutil.move(PLUGINS_DIRNAME, BLOCKED_DIRNAME)
     try:
         from yt_dlp.extractor.extractors import _ALL_CLASSES
+    except ImportError as e:
+        # If an extractor module is missing, we can still proceed by returning an empty list
+        # This allows the script to generate lazy extractors for the available modules
+        print(f'Warning: Could not import all extractors: {e}', file=sys.stderr)
+        return []
     finally:
         if os.path.exists(BLOCKED_DIRNAME):
             shutil.move(BLOCKED_DIRNAME, PLUGINS_DIRNAME)
